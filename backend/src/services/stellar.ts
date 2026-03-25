@@ -6,7 +6,17 @@ const HORIZON_URL =
     ? 'https://horizon.stellar.org'
     : 'https://horizon-testnet.stellar.org';
 
-const server = new StellarSdk.Horizon.Server(HORIZON_URL);
+export const server = new StellarSdk.Horizon.Server(HORIZON_URL);
+
+export class ValidationError extends Error {
+  statusCode: number;
+
+  constructor(message: string, statusCode = 400) {
+    super(message);
+    this.name = 'ValidationError';
+    this.statusCode = statusCode;
+  }
+}
 
 export class InvalidStellarInputError extends Error {
   constructor(message: string) {
