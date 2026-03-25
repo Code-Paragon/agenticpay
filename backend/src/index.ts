@@ -3,6 +3,7 @@ import { AsyncLocalStorage } from 'node:async_hooks';
 import { randomUUID } from 'node:crypto';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import rateLimit from 'express-rate-limit';
 import { verificationRouter } from './routes/verification.js';
 import { invoiceRouter } from './routes/invoice.js';
 import { stellarRouter } from './routes/stellar.js';
@@ -72,6 +73,12 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 // Health & Readiness checks
 app.use(healthRouter);
+
+// Apply general limiter to all API routes
+app.use('/api/', generalLimiter);
+
+// Apply stricter limiter specifically to invoice routes
+app.use('/api/v1/invoice', invoiceLimiter);
 
 // API routes
 app.use('/api/v1/verification', verificationRouter);
